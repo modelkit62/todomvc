@@ -1,93 +1,32 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/*jshint quotmark:false */
-/*jshint white:false */
-/*jshint trailing:false */
-/*jshint newcap:false */
-/// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./interfaces.d.ts"/>
-var utils_1 = require("./utils");
-var TodoModel = (function () {
-    function TodoModel(key) {
-        this.key = key;
-        this.todos = utils_1.Utils.store(key);
-        this.onChanges = [];
-    }
-    TodoModel.prototype.subscribe = function (onChange) {
-        this.onChanges.push(onChange);
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     };
-    TodoModel.prototype.inform = function () {
-        utils_1.Utils.store(this.key, this.todos);
-        this.onChanges.forEach(function (cb) { cb(); });
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    TodoModel.prototype.addTodo = function (title) {
-        this.todos = this.todos.concat({
-            id: utils_1.Utils.uuid(),
-            title: title,
-            completed: false
-        });
-        this.inform();
-    };
-    TodoModel.prototype.toggleAll = function (checked) {
-        this.todos = this.todos.map(function (todo) {
-            return utils_1.Utils.extend({}, todo, { completed: checked });
-        });
-        this.inform();
-    };
-    TodoModel.prototype.toggle = function (todoToToggle) {
-        this.todos = this.todos.map(function (todo) {
-            return todo !== todoToToggle ?
-                todo :
-                utils_1.Utils.extend({}, todo, { completed: !todo.completed });
-        });
-        this.inform();
-    };
-    TodoModel.prototype.destroy = function (todo) {
-        this.todos = this.todos.filter(function (candidate) {
-            return candidate !== todo;
-        });
-        this.inform();
-    };
-    TodoModel.prototype.save = function (todoToSave, text) {
-        this.todos = this.todos.map(function (todo) {
-            return todo !== todoToSave ? todo : utils_1.Utils.extend({}, todo, { title: text });
-        });
-        this.inform();
-    };
-    TodoModel.prototype.clearCompleted = function () {
-        this.todos = this.todos.filter(function (todo) {
-            return !todo.completed;
-        });
-        this.inform();
-    };
-    return TodoModel;
 })();
-exports.TodoModel = TodoModel;
-
-},{"./utils":6}],2:[function(require,module,exports){
-/*jshint quotmark:false */
-/*jshint white:false */
-/*jshint trailing:false */
-/*jshint newcap:false */
-/*global React, Router*/
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-/// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./interfaces.d.ts"/>
-var TodoModel_1 = require("./TodoModel");
+Object.defineProperty(exports, "__esModule", { value: true });
+var todoModel_1 = require("./todoModel");
 var footer_1 = require("./footer");
 var todoItem_1 = require("./todoItem");
 var constants_1 = require("./constants");
 var TodoApp = (function (_super) {
     __extends(TodoApp, _super);
     function TodoApp(props) {
-        _super.call(this, props);
-        this.state = {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             nowShowing: constants_1.ALL_TODOS,
             editing: null
         };
+        return _this;
     }
     TodoApp.prototype.componentDidMount = function () {
         var setState = this.setState;
@@ -149,7 +88,7 @@ var TodoApp = (function (_super) {
             }
         });
         var todoItems = shownTodos.map(function (todo) {
-            return (React.createElement(todoItem_1.TodoItem, {"key": todo.id, "todo": todo, "onToggle": _this.toggle.bind(_this, todo), "onDestroy": _this.destroy.bind(_this, todo), "onEdit": _this.edit.bind(_this, todo), "editing": _this.state.editing === todo.id, "onSave": _this.save.bind(_this, todo), "onCancel": function (e) { return _this.cancel(); }}));
+            return (React.createElement(todoItem_1.TodoItem, { key: todo.id, todo: todo, onToggle: _this.toggle.bind(_this, todo), onDestroy: _this.destroy.bind(_this, todo), onEdit: _this.edit.bind(_this, todo), editing: _this.state.editing === todo.id, onSave: _this.save.bind(_this, todo), onCancel: function (e) { return _this.cancel(); } }));
         });
         var activeTodoCount = todos.reduce(function (accum, todo) {
             return todo.completed ? accum : accum + 1;
@@ -157,23 +96,33 @@ var TodoApp = (function (_super) {
         var completedCount = todos.length - activeTodoCount;
         if (activeTodoCount || completedCount) {
             footer =
-                React.createElement(footer_1.TodoFooter, {"count": activeTodoCount, "completedCount": completedCount, "nowShowing": this.state.nowShowing, "onClearCompleted": function (e) { return _this.clearCompleted(); }});
+                React.createElement(footer_1.TodoFooter, { count: activeTodoCount, completedCount: completedCount, nowShowing: this.state.nowShowing, onClearCompleted: function (e) { return _this.clearCompleted(); } });
         }
         if (todos.length) {
-            main = (React.createElement("section", {"className": "main"}, React.createElement("input", {"className": "toggle-all", "type": "checkbox", "onChange": function (e) { return _this.toggleAll(e); }, "checked": activeTodoCount === 0}), React.createElement("ul", {"className": "todo-list"}, todoItems)));
+            main = (React.createElement("section", { className: "main" },
+                React.createElement("input", { className: "toggle-all", type: "checkbox", onChange: function (e) { return _this.toggleAll(e); }, checked: activeTodoCount === 0 }),
+                React.createElement("ul", { className: "todo-list" }, todoItems)));
         }
-        return (React.createElement("div", null, React.createElement("header", {"className": "header"}, React.createElement("h1", null, "todos"), React.createElement("input", {"ref": "newField", "className": "new-todo", "placeholder": "What needs to be done?", "onKeyDown": function (e) { return _this.handleNewTodoKeyDown(e); }, "autoFocus": true})), main, footer));
+        return (React.createElement("div", null,
+            React.createElement("header", { className: "header" },
+                React.createElement("h1", null, "todos"),
+                React.createElement("input", { ref: "newField", className: "new-todo", placeholder: "What needs to be done?", onKeyDown: function (e) { return _this.handleNewTodoKeyDown(e); }, autoFocus: true })),
+            main,
+            footer));
     };
     return TodoApp;
-})(React.Component);
-var model = new TodoModel_1.TodoModel('react-todos');
+}(React.Component));
+var model = new todoModel_1.TodoModel('react-todos');
 function render() {
-    React.render(React.createElement(TodoApp, {"model": model}), document.getElementsByClassName('todoapp')[0]);
+    React.render(React.createElement(TodoApp, { model: model }), document.getElementsByClassName('todoapp')[0]);
 }
 model.subscribe(render);
 render();
 
-},{"./TodoModel":1,"./constants":3,"./footer":4,"./todoItem":5}],3:[function(require,module,exports){
+},{"./constants":2,"./footer":3,"./todoItem":4,"./todoModel":5}],2:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ESCAPE_KEY = exports.ENTER_KEY = exports.COMPLETED_TODOS = exports.ACTIVE_TODOS = exports.ALL_TODOS = void 0;
 var ALL_TODOS = 'all';
 exports.ALL_TODOS = ALL_TODOS;
 var ACTIVE_TODOS = 'active';
@@ -185,58 +134,82 @@ exports.ENTER_KEY = ENTER_KEY;
 var ESCAPE_KEY = 27;
 exports.ESCAPE_KEY = ESCAPE_KEY;
 
-},{}],4:[function(require,module,exports){
-/*jshint quotmark:false */
-/*jshint white:false */
-/*jshint trailing:false */
-/*jshint newcap:false */
-/*global React */
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-/// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./interfaces.d.ts"/>
+},{}],3:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TodoFooter = void 0;
 var constants_1 = require("./constants");
 var utils_1 = require("./utils");
 var TodoFooter = (function (_super) {
     __extends(TodoFooter, _super);
     function TodoFooter() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     TodoFooter.prototype.render = function () {
         var activeTodoWord = utils_1.Utils.pluralize(this.props.count, 'item');
         var clearButton = null;
         if (this.props.completedCount > 0) {
-            clearButton = (React.createElement("button", {"className": "clear-completed", "onClick": this.props.onClearCompleted}, "Clear completed"));
+            clearButton = (React.createElement("button", { className: "clear-completed", onClick: this.props.onClearCompleted }, "Clear completed"));
         }
         var nowShowing = this.props.nowShowing;
-        return (React.createElement("footer", {"className": "footer"}, React.createElement("span", {"className": "todo-count"}, React.createElement("strong", null, this.props.count), " ", activeTodoWord, " left"), React.createElement("ul", {"className": "filters"}, React.createElement("li", null, React.createElement("a", {"href": "#/", "className": classNames({ selected: nowShowing === constants_1.ALL_TODOS })}, "All")), ' ', React.createElement("li", null, React.createElement("a", {"href": "#/active", "className": classNames({ selected: nowShowing === constants_1.ACTIVE_TODOS })}, "Active")), ' ', React.createElement("li", null, React.createElement("a", {"href": "#/completed", "className": classNames({ selected: nowShowing === constants_1.COMPLETED_TODOS })}, "Completed"))), clearButton));
+        return (React.createElement("footer", { className: "footer" },
+            React.createElement("span", { className: "todo-count" },
+                React.createElement("strong", null, this.props.count),
+                " ",
+                activeTodoWord,
+                " left"),
+            React.createElement("ul", { className: "filters" },
+                React.createElement("li", null,
+                    React.createElement("a", { href: "#/", className: classNames({ selected: nowShowing === constants_1.ALL_TODOS }) }, "All")),
+                ' ',
+                React.createElement("li", null,
+                    React.createElement("a", { href: "#/active", className: classNames({ selected: nowShowing === constants_1.ACTIVE_TODOS }) }, "Active")),
+                ' ',
+                React.createElement("li", null,
+                    React.createElement("a", { href: "#/completed", className: classNames({ selected: nowShowing === constants_1.COMPLETED_TODOS }) }, "Completed"))),
+            clearButton));
     };
     return TodoFooter;
-})(React.Component);
+}(React.Component));
 exports.TodoFooter = TodoFooter;
 
-},{"./constants":3,"./utils":6}],5:[function(require,module,exports){
-/*jshint quotmark: false */
-/*jshint white: false */
-/*jshint trailing: false */
-/*jshint newcap: false */
-/*global React */
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-/// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./interfaces.d.ts"/>
+},{"./constants":2,"./utils":6}],4:[function(require,module,exports){
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TodoItem = void 0;
 var constants_1 = require("./constants");
 var TodoItem = (function (_super) {
     __extends(TodoItem, _super);
     function TodoItem(props) {
-        _super.call(this, props);
-        this.state = { editText: this.props.todo.title };
+        var _this = _super.call(this, props) || this;
+        _this.state = { editText: _this.props.todo.title };
+        return _this;
     }
     TodoItem.prototype.handleSubmit = function (event) {
         var val = this.state.editText.trim();
@@ -279,16 +252,86 @@ var TodoItem = (function (_super) {
     };
     TodoItem.prototype.render = function () {
         var _this = this;
-        return (React.createElement("li", {"className": classNames({
-            completed: this.props.todo.completed,
-            editing: this.props.editing
-        })}, React.createElement("div", {"className": "view"}, React.createElement("input", {"className": "toggle", "type": "checkbox", "checked": this.props.todo.completed, "onChange": this.props.onToggle}), React.createElement("label", {"onDoubleClick": function (e) { return _this.handleEdit(); }}, this.props.todo.title), React.createElement("button", {"className": "destroy", "onClick": this.props.onDestroy})), React.createElement("input", {"ref": "editField", "className": "edit", "value": this.state.editText, "onBlur": function (e) { return _this.handleSubmit(e); }, "onChange": function (e) { return _this.handleChange(e); }, "onKeyDown": function (e) { return _this.handleKeyDown(e); }})));
+        return (React.createElement("li", { className: classNames({
+                completed: this.props.todo.completed,
+                editing: this.props.editing
+            }) },
+            React.createElement("div", { className: "view" },
+                React.createElement("input", { className: "toggle", type: "checkbox", checked: this.props.todo.completed, onChange: this.props.onToggle }),
+                React.createElement("label", { onDoubleClick: function (e) { return _this.handleEdit(); } }, this.props.todo.title),
+                React.createElement("button", { className: "destroy", onClick: this.props.onDestroy })),
+            React.createElement("input", { ref: "editField", className: "edit", value: this.state.editText, onBlur: function (e) { return _this.handleSubmit(e); }, onChange: function (e) { return _this.handleChange(e); }, onKeyDown: function (e) { return _this.handleKeyDown(e); } })));
     };
     return TodoItem;
-})(React.Component);
+}(React.Component));
 exports.TodoItem = TodoItem;
 
-},{"./constants":3}],6:[function(require,module,exports){
+},{"./constants":2}],5:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TodoModel = void 0;
+var utils_1 = require("./utils");
+var TodoModel = (function () {
+    function TodoModel(key) {
+        this.key = key;
+        this.todos = utils_1.Utils.store(key);
+        this.onChanges = [];
+    }
+    TodoModel.prototype.subscribe = function (onChange) {
+        this.onChanges.push(onChange);
+    };
+    TodoModel.prototype.inform = function () {
+        utils_1.Utils.store(this.key, this.todos);
+        this.onChanges.forEach(function (cb) { cb(); });
+    };
+    TodoModel.prototype.addTodo = function (title) {
+        this.todos = this.todos.concat({
+            id: utils_1.Utils.uuid(),
+            title: title,
+            completed: false
+        });
+        this.inform();
+    };
+    TodoModel.prototype.toggleAll = function (checked) {
+        this.todos = this.todos.map(function (todo) {
+            return utils_1.Utils.extend({}, todo, { completed: checked });
+        });
+        this.inform();
+    };
+    TodoModel.prototype.toggle = function (todoToToggle) {
+        this.todos = this.todos.map(function (todo) {
+            return todo !== todoToToggle ?
+                todo :
+                utils_1.Utils.extend({}, todo, { completed: !todo.completed });
+        });
+        this.inform();
+    };
+    TodoModel.prototype.destroy = function (todo) {
+        this.todos = this.todos.filter(function (candidate) {
+            return candidate !== todo;
+        });
+        this.inform();
+    };
+    TodoModel.prototype.save = function (todoToSave, text) {
+        this.todos = this.todos.map(function (todo) {
+            return todo !== todoToSave ? todo : utils_1.Utils.extend({}, todo, { title: text });
+        });
+        this.inform();
+    };
+    TodoModel.prototype.clearCompleted = function () {
+        this.todos = this.todos.filter(function (todo) {
+            return !todo.completed;
+        });
+        this.inform();
+    };
+    return TodoModel;
+}());
+exports.TodoModel = TodoModel;
+
+},{"./utils":6}],6:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Utils = void 0;
 var Utils = (function () {
     function Utils() {
     }
@@ -318,7 +361,7 @@ var Utils = (function () {
     Utils.extend = function () {
         var objs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            objs[_i - 0] = arguments[_i];
+            objs[_i] = arguments[_i];
         }
         var newObj = {};
         for (var i = 0; i < objs.length; i++) {
@@ -332,7 +375,7 @@ var Utils = (function () {
         return newObj;
     };
     return Utils;
-})();
+}());
 exports.Utils = Utils;
 
-},{}]},{},[2]);
+},{}]},{},[1]);
